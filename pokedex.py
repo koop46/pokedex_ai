@@ -41,19 +41,19 @@ with body:
 
         predicted_pokemon = modell.predict_pokemon(height, weight, primary_type, secondary_type, evolutionary_stage)
         pokemon = predicted_pokemon[0].capitalize()
-        stats = modell.pokemon_stats(pokemon.lower())
+        nr_stat, name_stat, height_stat, weight_stat, primary_stat, secondary_stat = modell.pokemon_stats(pokemon.lower())
 
-        st.subheader(f"Predicted pokemon: {pokemon}")
+        st.subheader(f"Predicted pokemon: #{nr_stat} | {pokemon}")
         st.image(poke_pics[pokemon][1])
         
-        with st.expander(f"#{stats[0]} | {stats[1].capitalize()}"):
+        with st.expander(f"Pokemon stats"):
 
             st.text(f"""  
-Avg height: {stats[2]} cm 
-Avg weight: {stats[3]} kg
+Avg height: {height_stat:.1f} cm 
+Avg weight: {weight_stat:.1f} kg
 
-Primary type: {stats[4].capitalize()}
-Secondary type: {stats[5].capitalize()}
+Primary type: {primary_stat.capitalize()}
+Secondary type: {secondary_stat.capitalize()}
 
 Evolutionary stage: {evolutionary_stage}/3
 """)
