@@ -2,6 +2,18 @@ import streamlit as st
 from piclinks import poke_pics
 from pokemon_class import Pokemon_modell
 
+"""
+- instantiate modell, df, classifier and scaler
+- body:
+    -col1:
+        input form with number_inputs, selectionboxes & radiobuttons
+    -col2:
+        just for spacing
+    -col3:
+        where predictions is presented, with name, picture & data
+"""
+
+
 modell = Pokemon_modell()
 df = modell.pokemon_df
 classifier, scaler = modell.train_modell()
@@ -16,24 +28,49 @@ with body:
         form = st.form("input_form")
         form.subheader("Input stats")
 
-        height = form.number_input('Height (cm)', min_value=50.0, max_value=400.0, step=0.5, value=100.0, placeholder='Enter centimeters', format='%f')
-        weight = form.number_input('Weight (kg)', min_value=3.0, max_value=200.0, step=0.5, value=75.5, placeholder='Enter kilograms', format='%f')
+        height = form.number_input('Height (cm)',
+                                    min_value=50.0,
+                                    max_value=400.0, 
+                                    step=0.5, 
+                                    value=100.0, 
+                                    placeholder='Enter centimeters', 
+                                    format='%f'
+                                    )
+        weight = form.number_input('Weight (kg)', 
+                                   min_value=3.0, 
+                                   max_value=200.0, 
+                                   step=0.5, 
+                                   value=75.5, 
+                                   placeholder='Enter kilograms', 
+                                   format='%f'
+                                   )
 
-        primary_type = form.selectbox('Primary type', ('Water', 'Rock', 'Fighting', 'Bug', 'Fairy', 'Ice', 'Grass', 'Ghost', 'Psychic', 'Dragon', 'Ground', 'Fire', 'Electric', 'Normal', 'Poison'))
+        primary_type = form.selectbox('Primary type', 
+                                      ('Water', 'Rock', 'Fighting', 
+                                       'Bug', 'Fairy', 'Ice', 
+                                       'Grass', 'Ghost', 'Psychic', 
+                                       'Dragon', 'Ground', 'Fire', 
+                                       'Electric', 'Normal', 'Poison')
+                                       )
         primary_type = primary_type.lower()
-
-
-        secondary_type = form.selectbox('Secondary type', ('Normal', 'Rock', 'Water', 'Steel', 'Flying', 'Ice', 'Fighting', 'Electric', 'Poison', 'Bug', 'Fairy', 'Dragon', 'Psychic', 'Ground', 'Grass', 'Fire'))
+        secondary_type = form.selectbox('Secondary type', 
+                                        ('Normal', 'Rock', 'Water', 
+                                         'Steel', 'Flying', 'Ice', 
+                                         'Fighting', 'Electric', 'Poison', 
+                                         'Bug', 'Fairy', 'Dragon', 
+                                         'Psychic', 'Ground', 'Grass', 'Fire')
+                                         )
         secondary_type = secondary_type.lower()
 
 
-        evolutionary_stage = form.radio(
-            'Evolutionary stage', 
-            [1, 2, 3],
-            horizontal=True
-        )
+        evolutionary_stage = form.radio('Evolutionary stage', 
+                                        [1, 2, 3],
+                                        horizontal=True
+                                        )
+        
         if form.form_submit_button("Search"):
             pass
+
     with col2:
         pass
 
@@ -41,6 +78,7 @@ with body:
 
         predicted_pokemon = modell.predict_pokemon(height, weight, primary_type, secondary_type, evolutionary_stage)
         pokemon = predicted_pokemon[0].capitalize()
+
         nr_stat, name_stat, height_stat, weight_stat, primary_stat, secondary_stat = modell.pokemon_stats(pokemon.lower())
 
         st.subheader(f"Predicted pokemon: #{nr_stat} | {pokemon}")

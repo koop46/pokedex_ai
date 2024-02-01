@@ -31,11 +31,15 @@ class Pokemon_modell:
 
 
     def train_modell(self):
+        
+        """
+        Takes no parameter, accesses df in class variable pokemon_df, a preprocessed df
+        """
 
 
         encoded_pokemons = self.pokemon_df.to_dummies(columns=["primary", "secondary", 'stage'])
 
-        X = encoded_pokemons[:, 2:].to_numpy() #all rows, but starting from col. index 2: height_cm
+        X = encoded_pokemons[:, 2:].to_numpy() #all rows, but starting from column 2: height_cm
         y = encoded_pokemons['name'].to_numpy() #name col. as target
 
 
@@ -57,11 +61,20 @@ class Pokemon_modell:
 
     def predict_pokemon(self, height, weight, primary, secondary, evo_stage):
 
-        """ 
+        """
+        Method takes 5 parameters to classify pokemon and creates filler data for the 'pred_df', a dataframe used to one-hot-encode 
+        all values in 'primary', 'secondary' and 'stage' features.
+        
+        Parameters go from:
+        [height, weight, primary, secondary, stage]
+        --> 5 parameters
+        
+        to:
 
-        The predict_pokemon function starts by creating filler data for the 'pred_df', 
-        a dataframe used to one-hot-encode all values in 'primary', 'secondary' and 'stage' features.
+        [height, weight, primary_1, primary_2... primary_n, secondary_1, secondary_2... secondary_n, stage_1, stage_2, stage_3]
+        --> 36 parameters.
 
+        Dataframe is then converted to numpy array.
         """
 
         p_fillers = [
@@ -78,7 +91,7 @@ class Pokemon_modell:
 
         w_fillers = [123]*36 #fill column length for encoding
         h_fillers = [321]*36
-        stage_fillers = [1,2,3]*10 + [1,2,3,1,2,3]
+        stage_fillers = [1,2,3]*10 + [1,2,3,1,2,3] # 3*10 + 6 = 36
 
 
         pred_df = pl.DataFrame({
@@ -87,18 +100,22 @@ class Pokemon_modell:
             'stage': [evo_stage] + stage_fillers
         })
 
-        pred_df = pred_df.to_dummies(columns=["primary", "secondary", 'stage']) #encode
+        pred_df = pred_df.to_dummies(columns=["-primary", "secondary", 'stage']) #polars encode method, to_dummies()
         pred_array = pred_df[0,:].to_numpy()
 
         trained_classifier, trained_scaler = self.train_modell()
 
-        z_test = trained_scaler.transform(pred_array)
-        prediction = trained_classifier.predict(z_test)
+        scaled_array = trained_scaler.transform(pred_array)
+        prediction = trained_classifier.predict(scaled_array)
 
         return prediction
 
 
     def pokemon_stats(self, pokemon):
+        """
+        Takes predicted pokemon as parameter, filters pokemon_df for stats.
+        Extracts average of all training instances from the describe() and returns tuple of stats
+        """
         
         stats_range = self.pokemon_df.filter(pl.col('name') == pokemon)    
 
@@ -112,12 +129,3 @@ class Pokemon_modell:
 
 
 
-
-
-
-po = Pokemon_modell()
-classifier, scaler = po.train_modell()
-
-# pokemon = po.predict_pokemon(166, 70, 'normal', 'normal', 3)
-
-# print(pokemon)
