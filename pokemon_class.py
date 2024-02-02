@@ -56,7 +56,7 @@ class Pokemon_modell:
         classifier = KNeighborsClassifier(n_neighbors=10)
         classifier.fit(X_train, y_train)
 
-        return classifier, scaler
+        return classifier, scaler, X_test, y_test
 
 
     def predict_pokemon(self, height, weight, primary, secondary, evo_stage):
@@ -100,10 +100,10 @@ class Pokemon_modell:
             'stage': [evo_stage] + stage_fillers
         })
 
-        pred_df = pred_df.to_dummies(columns=["-primary", "secondary", 'stage']) #polars encode method, to_dummies()
+        pred_df = pred_df.to_dummies(columns=["primary", "secondary", 'stage']) #polars encode method, to_dummies()
         pred_array = pred_df[0,:].to_numpy()
 
-        trained_classifier, trained_scaler = self.train_modell()
+        trained_classifier, trained_scaler, _, _ = self.train_modell()
 
         scaled_array = trained_scaler.transform(pred_array)
         prediction = trained_classifier.predict(scaled_array)
