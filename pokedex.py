@@ -20,7 +20,7 @@ classifier, scaler, _, _ = modell.train_modell() #we're only going to use classi
 body = st.container()
 
 with body:
-    col1, col2, col3 = st.columns([.4, .2, .4])
+    col1, col2, col3 = st.columns([.4, .2, .4]) # ratios for columns 40%, 20% & 20%s
 
     with col1:
 
