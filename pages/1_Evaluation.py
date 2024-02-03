@@ -18,25 +18,21 @@ with body:
     classification_report_tab, confusion_matrix_tab = st.tabs(['Classification Report', 'Confusion Matrix'])
 
     with classification_report_tab:
+        st.text("""First column is name. Second is 'precision': % of true positives. 
+Third is 'recall': % of positive samples found. 
+Fourt is 'f1-score': overall performance of model.
+Last one is amount of instances in test set
+""")
+        st.text(" ")    
         st.text(classification_report(y_test, y_pred))
 
     with confusion_matrix_tab:
-        fig = sns.set(rc={'figure.figsize': (25, 15)})  # Size in inches
+        fig = plt.figure(figsize=(50, 50)) # Size in inches
         sns.heatmap(cm, annot=True)
 
         plt.title("Confusion matrix")
         plt.ylabel('Truth')
         plt.xlabel('Prediction')
         st.pyplot(fig)
-
-
-
-
-
-
-
-
-
-
 
 
