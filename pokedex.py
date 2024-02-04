@@ -28,8 +28,8 @@ with body:
         form.subheader("Input stats")
 
         height = form.number_input('Height (cm)',
-                                    min_value=50.0,
-                                    max_value=400.0, 
+                                    min_value=15.0,
+                                    max_value=890.0, 
                                     step=0.5, 
                                     value=70.0, 
                                     placeholder='Enter centimeters', 
